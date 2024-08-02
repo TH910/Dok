@@ -98,7 +98,7 @@ void producer(std::vector<messpunkt> &vec, unsigned int size,calculation &c,doub
       c.track_koords_anzeigen(actual_mp.sx,actual_mp.sy,actual_mp.sz);
       c.robo_koords_anzeigen(actual_mp.sx,actual_mp.sy,actual_mp.sz);
       //hinzufügen des aktuellen Messpunkts zu vecbuf, sobald alle Punkte erfasst und gemittelt wurden flag=1
-      if(c.status_mp_track==0){
+      if(c.mp_track_vorhanden==false){
           vecbuf.push_back(actual_mp);
           //Kopieren des vecbuf Objekts in gemeinsam genutzte Varibale vec
           if(size==vecbuf.size()){
@@ -127,6 +127,7 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
 
 
   while(1){
+
       if(c.mp_track_vorhanden==false){
         
           if(c.reset_kalib==true){

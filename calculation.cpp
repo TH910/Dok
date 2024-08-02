@@ -134,7 +134,7 @@ void calculation::status_mp_einlesen(bool state)
 
 void calculation::reset()
 {
-
+  mp_track_vorhanden=false;
   reset_kalib = true;
 }
 
