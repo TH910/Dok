@@ -106,7 +106,7 @@ void calculation::trafom_berechnen()
     std::cout << "Residual: " << residual << std::endl;
     doc1.SetCell(5, 0, residual);
         doc1.Save(path);
-    this->meldung_anzeigen("Trafo-Matrix wurde berechnet und ist bereit");
+    this->meldung_anzeigen("Trafomatrix wurde berechnet und ist bereit");
   }
 }
 
@@ -155,5 +155,5 @@ void calculation::trafom_einlesen()
   {
     std::cout << trafomatrix[r][0] << "  " << trafomatrix[r][1] << "  " << trafomatrix[r][2] << "  " << trafomatrix[r][3] << " Reihe " << r << std::endl;
   }
-  this->meldung_anzeigen("Trafo-Matrix wurde von csv-Datein eingelesen und ich bereit");
+  this->meldung_anzeigen("Trafomatrix wurde von csv-Datein eingelesen und ich bereit");
 }

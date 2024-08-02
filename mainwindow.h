@@ -82,7 +82,7 @@ public slots:
   void meldung(const char *message);
 
   /**
-   * @brief diese Slots werden durch clicken der Buttons auf der GUI ausgelöst und
+   * @brief diese Slots werden durch betätigen der Buttons auf der GUI ausgelöst und
    *        emittieren ein Signale der Klasse MainWindow, das einen Slot der Klasse calculation auslöst
    *
    */

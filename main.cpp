@@ -127,7 +127,8 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
 
 
   while(1){
-      if(c.status_mp_track==0){
+      if(c.mp_track_vorhanden==false){
+        
           if(c.reset_kalib==true){
               vecmittel.clear();
               c.mp_track_vorhanden=false;
@@ -175,7 +176,7 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
               if(vecmittel.size()==anzahl_punkte){
                   std::cout<<"Alle Werte wurden abgespeichert"<<std::endl;
                   //flag=1;
-                  c.status_mp_track=1;
+                  //c.status_mp_track=1;
                   //data.setValues_tast(vecmittel);
                   c.track_mp_einlesen(vecmittel);
                   //break;

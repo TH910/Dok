@@ -46,13 +46,6 @@ public slots:
   void robo_mp_einlesen(std::vector<messpunkt> mp_robo);
 
   /**
-   * @brief speichert die Messpunkte des  Trackingsystems  im Attribut mp_track ab + setzt mp_track_vorhanden auf true
-   * 
-   * @param mp_track Trackingsys.-Messpunkte die im Container std::vector abgespeichert sind
-   */
-  void track_mp_einlesen(std::vector<messpunkt> mp_track);
-
-  /**
    * @brief setzt das Attribut start auf True und dadurch wird Endlos-Schleife in der Funktion producer verlassen
    * 
    */
@@ -63,7 +56,7 @@ public slots:
    * 
    * @param state 
    */
-  void status_mp_einlesen(int state);
+  void status_mp_einlesen(bool state);
 
   /**
    * @brief setzt das Attribut reset auf true 
@@ -76,7 +69,15 @@ public slots:
  * 
  */
   void trafom_einlesen();
+
+
 public:
+  /**
+   * @brief speichert die Messpunkte des  Trackingsystems  im Attribut mp_track ab + setzt mp_track_vorhanden auf true
+   * 
+   * @param mp_track Trackingsys.-Messpunkte die im Container std::vector abgespeichert sind
+   */
+  void track_mp_einlesen(std::vector<messpunkt> mp_track);
   /**
    * @brief Zeigt die  umgerechenten x-,y- und z-Koordinaten aus Sicht des lokalen Robotersystems auf der GUI an
    *
@@ -135,7 +136,7 @@ public:
   bool mp_robo_vorhanden = false;  // Flag um zu Signalisieren, dass Messpunkte von lok. Roboterkoordsys. vorhanden sind
   bool mp_track_vorhanden = false; // Flag um zu Signalisieren, dass Messpunkte von glob. Trackingsys. vorhanden sind
   bool start = false;              // wird geändert, wenn Start Button gedrückt wurde (dadurch wird Endlos-Schleife bei producer-Funktion verlassen)
-  bool status_mp_track = false;                  // Anzahl der bisher erfassten Messpunkte des Tracking-Koordinatensystems
+  bool status_mp_track = false;    // Anzahl der bisher erfassten Messpunkte des Tracking-Koordinatensystems
   bool reset_kalib = false;        // wird geändert, wenn Reset Button gedrückt wurde
   char *path;                      // Datei-Pfad zu den csv-Files
 };
