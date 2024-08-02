@@ -28,6 +28,7 @@
 #define PORT     5000
 #define MAXLINE 1024
 
+//semaphores
 sem_t mutex;
 sem_t empty;
 sem_t full;
