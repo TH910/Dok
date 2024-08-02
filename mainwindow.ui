@@ -497,7 +497,7 @@ font: 75 14pt &quot;Waree&quot;;
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>340</y>
       <width>91</width>
       <height>31</height>
@@ -513,7 +513,7 @@ font: 75 14pt &quot;Waree&quot;;
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>190</y>
       <width>101</width>
       <height>31</height>

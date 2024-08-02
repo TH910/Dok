@@ -61,9 +61,9 @@ public slots:
   /**
    * @brief gibt die Anzahl der bisher erfassten Messpunkte an
    * 
-   * @param state 
+   * @param state Status der Erfassung der Tracking_Messpunkte true = fertig
    */
-  void status_mp_einlesen(int state);
+  void status_mp_einlesen(bool state);
 
   /**
    * @brief setzt das Attribut reset auf true 
