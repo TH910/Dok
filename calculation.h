@@ -32,14 +32,50 @@ signals:
    *
    */
 public slots:
+   /**
+   * @brief berechnete die Trafomatrix und speichert sie im Attribut trafomatix ab
+   * 
+   */
   void trafom_berechnen(void);
-  void robo_mp_einlesen(std::vector<messpunkt> mp_robo);
-  void track_mp_einlesen(std::vector<messpunkt> mp_track);
-  void starten();
-  void status_mp_einlesen(bool state);
-  void reset();
-  void trafom_einlesen();
 
+  /**
+   * @brief  speichert die Messpunkte des  Robotersystems  im Attribut mp_robo ab + setzt mp_robo_vorhanden auf true 
+   * 
+   * @param mp_robo Roboter-Messpunkte die im Container std::vector abgespeichert sind 
+   */
+  void robo_mp_einlesen(std::vector<messpunkt> mp_robo);
+
+  /**
+   * @brief speichert die Messpunkte des  Trackingsystems  im Attribut mp_track ab + setzt mp_track_vorhanden auf true
+   * 
+   * @param mp_track Trackingsys.-Messpunkte die im Container std::vector abgespeichert sind
+   */
+  void track_mp_einlesen(std::vector<messpunkt> mp_track);
+
+  /**
+   * @brief setzt das Attribut start auf True und dadurch wird Endlos-Schleife in der Funktion producer verlassen
+   * 
+   */
+  void starten();
+
+  /**
+   * @brief gibt die Anzahl der bisher erfassten Messpunkte an
+   * 
+   * @param state 
+   */
+  void status_mp_einlesen(int state);
+
+  /**
+   * @brief setzt das Attribut reset auf true 
+   * 
+   */
+  void reset();
+
+/**
+ * @brief liest die Trafomatrix aus der csv-Datei ein
+ * 
+ */
+  void trafom_einlesen();
 public:
   /**
    * @brief Zeigt die  umgerechenten x-,y- und z-Koordinaten aus Sicht des lokalen Robotersystems auf der GUI an
