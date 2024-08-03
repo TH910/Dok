@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
-#include "helpfunctions.h"
 #include "rapidcsv.h"
 #include "messpunkt.h"
 #include <vector>
@@ -75,10 +74,21 @@ void MainWindow::on_robo_mp_einlesen_btn_clicked()
     QString s=ui->lineEdit->text();
     QByteArray ba = s.toLatin1();
     char *path_folder= ba.data();
-    char data_path[100];
+    char data_path[500];
+    std::vector<messpunkt> mpl;
+    std::vector<double> row;
     strcpy(data_path, path_folder);
     strcat(data_path, "/messpunkte.csv");
-    std::vector<messpunkt> mpl=csv_einlesen(data_path);
+
+    //messpunkte.csv wird Zeilenweise eingelesen
+    rapidcsv::Document doc(data_path,rapidcsv::LabelParams(0,0));
+    for(unsigned int i=0; i<doc.GetRowCount();i++){
+      row=doc.GetRow<double>(i);
+      mpl.push_back(messpunkt(row[0],row[1],row[2]));
+    }
+
+    //Ausgabe der Roboter-Messpunkte
+    std::cout<<"Roboter Messpunkte wurden aus csv_Datei eingelesen"<<std::endl;
     for(size_t i=0; i<mpl.size(); ++i){
         mpl[i].anzeigen();
       }
@@ -87,12 +97,12 @@ void MainWindow::on_robo_mp_einlesen_btn_clicked()
 
 void MainWindow::on_trafom_berechnen_btn_clicked()
 {
- emit trafom_berechnen_sig();
+    emit trafom_berechnen_sig();
 }
 
 void MainWindow::on_trafom_einlesen_btn_clicked()
 {
-   emit trafom_einlesen_sig();
+    emit trafom_einlesen_sig();
 }
 
 void MainWindow::on_prog_beenden_btn_clicked()

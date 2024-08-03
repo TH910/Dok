@@ -9,28 +9,39 @@
 class sample
 {
 public:
-  std::vector <messpunkt> daten;
-  int anzahl_mp;
+ /**
+  * @brief Erstellt ein neues sample Objekt und führt anhand der Daten direkt einen Analyse durch,
+  *        sodass die statistischen Größen in den Attributen abgespeichert werden können
+  * 
+  * @param daten repräsentiert den Datensatz, der analysiert werden soll
+  */
+  sample(std::vector <messpunkt> daten);
+
+  /**
+   * @brief Destroy the sample object
+   * 
+   */
+  ~sample(); 
+
+  private: 
+  std::vector <messpunkt> daten;//Datensatz an Messpunkte
+  int anzahl_mp;//Anazahl an Messpunkten
+  //Maximalen Werte
   double xmax;
-  double xmin;
   double ymax;
-  double ymin;
   double zmax;
+  //Minimalen Werte
+  double xmin;
+  double ymin;
   double zmin;
+  //Mittelwerte
   double xmittel;
   double ymittel;
   double zmittel;
+  //Varianz
   double xvar;
   double yvar;
   double zvar;
- /**
-  * @brief Construct a new sample object
-  * 
-  * @param daten repräsentiert den Datensatz, der analysiert werdne soll
-  */
-  sample(std::vector <messpunkt> daten);
-  //Destruktor
-  ~sample();
 };
 
 #endif // SAMPLE_H

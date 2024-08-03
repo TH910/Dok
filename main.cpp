@@ -22,13 +22,13 @@
 #include "sample.h"
 #include <QLCDNumber>
 #include "calculation.h"
-#include "helpfunctions.h"
+
 
 
 #define PORT     5000
 #define MAXLINE 1024
 
-//semaphores
+//semaphoren
 sem_t mutex;
 sem_t empty;
 sem_t full;
@@ -38,11 +38,6 @@ void producer(std::vector<messpunkt> &vec, unsigned int size,calculation &c,doub
   int sockfd;
   char buffer[MAXLINE];
   struct sockaddr_in servaddr, cliaddr;
-
-  //IP für die Verwendung Daheim und an der Hochschule
-  //char ip[]="192.168.188.41";
-  //char ip[]="192.168.0.138";
-
 
   // Creating socket file descriptor
   if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
@@ -66,9 +61,10 @@ void producer(std::vector<messpunkt> &vec, unsigned int size,calculation &c,doub
       exit(EXIT_FAILURE);
     }
 
+
   socklen_t len;
   int n;
-  len = sizeof(cliaddr);  //len is value/result
+  len = sizeof(cliaddr); 
 
   //Initialisierung der benötigten Variablen
   std::vector<messpunkt> vecbuf;
@@ -89,15 +85,17 @@ void producer(std::vector<messpunkt> &vec, unsigned int size,calculation &c,doub
 
       // Grün/Rot Mechnismus
       if(((actual_mp.sx-last_mp.sx)<=toleranz) &&((actual_mp.sy-last_mp.sy)<=toleranz)&&((actual_mp.sz-last_mp.sz)<=toleranz)){
-          c.ampel_status(1);
+          c.ampel_status(1);//Ampel auf grün stellen
         }else {
-          c.ampel_status(0);
+          c.ampel_status(0);//Ampel auf rot stellen
         }
 
-      //Aktualisierung der Koordinaten-Anzeige
-      c.track_koords_anzeigen(actual_mp.sx,actual_mp.sy,actual_mp.sz);
-      c.robo_koords_anzeigen(actual_mp.sx,actual_mp.sy,actual_mp.sz);
-      //hinzufügen des aktuellen Messpunkts zu vecbuf, sobald alle Punkte erfasst und gemittelt wurden flag=1
+      //Aktualisierung der Koordinaten-Anzeigen
+      c.track_koords_anzeigen(actual_mp.sx,actual_mp.sy,actual_mp.sz);//Trackingkoordinatensys.
+      c.robo_koords_anzeigen(actual_mp.sx,actual_mp.sy,actual_mp.sz);//Roboterkoordinatensys.
+
+
+      //hinzufügen des aktuellen Messpunkts zu vecbuf, wenn Messpunkte des Trackingsystems noch nicht vorhanden sind 
       if(c.status_mp_track==0){
           vecbuf.push_back(actual_mp);
           //Kopieren des vecbuf Objekts in gemeinsam genutzte Varibale vec
@@ -125,18 +123,17 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
 
   std::vector<messpunkt> vecbuf2;
 
-
   while(1){
+      //wird nur Ausgeführt, falls die Messpunkt des Trackingsystems noch nicht vorhanden sind 
       if(c.mp_track_vorhanden==false){
-        
+          //wenn Reset-Button gedrückt wurde werden Tracking Messpunkte erneut erfasst
           if(c.reset_kalib==true){
               vecmittel.clear();
-              c.mp_track_vorhanden=false;
               c.anzahl_mp_anzeigen(0);
               c.reset_kalib=false;
             }
 
-          //herauskopieren der Daten aus dem gemeinsam genutzten Speicherbereich
+          //herauskopieren der Daten aus dem gemeinsam genutzten Speicherbereich vec in lokalen vecbuf2
           sem_wait(&full);
           sem_wait(&mutex);
 
@@ -146,12 +143,12 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
           sem_post(&mutex);
           sem_post(&empty);
 
-          //Umwandlung der einzelenen Messpunkte in Klasse Sample
+          //Umwandlung der einzelenen Messpunkte in Klasse sample (analysiert statistische Größen)
           if(vecbuf2.size()!=0){
               sample test=sample(vecbuf2);
 
               /**
-              //Verwendung des Span
+              //optinonal, Verwendung des Span
               if((test.xmax-test.xmin<= toleranz)&&(test.ymax-test.ymin<= toleranz) &&(test.zmax-test.zmin<= toleranz)){
                   vecmittel.push_back(messpunkt(test.xmittel,test.ymittel,test.zmittel));
                   p.receive_data(vecmittel.size());
@@ -164,23 +161,20 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
 
               //Verwendung der Varianz
               if((test.xvar<= toleranz)&&(test.yvar<= toleranz) &&(test.zvar<= toleranz)){
-                  // vecmittel enthält alle gemittelten Messpunkte der Datensätze, die eine geringere Varianz als die Toleranz aufweisen
+                  //vecmittel enthält alle gemittelten Messpunkte der Datensätze, die eine geringere Varianz als die Toleranz aufweisen
                   vecmittel.push_back(messpunkt(test.xmittel,test.ymittel,test.zmittel));
                   c.anzahl_mp_anzeigen(vecmittel.size());
-                  std::cout<< "###########"<< std::endl;
-                  std::cout<<" Wert gespeichert"<<"  Größe des Vector: "<< vecmittel.size()<<std::endl;
+
+                  std::cout"Messpunkt: "<< vecmittel.size()<<" gespeichert" <<std::endl;
                   std::cout<<"X: "<<test.xmittel<<" Y: "<<test.ymittel<< " Z: "<< test.zmittel<< std::endl;
-                  std::cout<< "###########"<< std::endl;
                 }
 
+              //Wenn vecmittel alle Messpunkte erfasst hat werden sie als Attribut in calculation abgespeichert
               if(vecmittel.size()==anzahl_punkte){
-                  std::cout<<"Alle Werte wurden abgespeichert"<<std::endl;
-                  //flag=1;
-                  //c.status_mp_track=1;
-                  //data.setValues_tast(vecmittel);
+                  std::cout<<"Alle Messpunkte wurden erfasst"<<std::endl;
                   c.track_mp_einlesen(vecmittel);
-                  //break;
-                  std::cout<<"Read Schleife beendet"<<std::endl;
+
+                  //Ausgabe der Werte auf der Werte am Terminal 
                   std::cout<<"Die abgespeicherten Mittelwerte lauten"<<std::endl;
                   for (auto ele: vecmittel){
                       ele.anzeigen();
@@ -189,15 +183,8 @@ void consumer(std::vector<messpunkt> &vec,std::vector<messpunkt> &vecmittel,doub
                 }
 
             }
-        }else{
-
-          //leere loop
         }
-
-
-
     }
-
 }
 
 
@@ -210,12 +197,12 @@ int main(int argc, char *argv[])
   std::vector<messpunkt> vec;
   std::vector<messpunkt> vecmittel;
 
-
+  //!!!!!!
   // Hier muss beim Setup der Pfad des csv-Files Ordner angepasst werden
   char path[500]="/home/timohin/Documents/tracking/csv-Files";
   w.ui->lineEdit->setText(QString::asprintf(path));
 
-
+  //Datei-Pfade erstellen
   char config_path[500];
   strcpy(config_path, path);
   strcat(config_path, "/config.csv");
@@ -224,23 +211,13 @@ int main(int argc, char *argv[])
   strcat(csv_path, "/trafomatrix.csv");
   c.path=csv_path;
 
+  //config-File einlesen
   rapidcsv::Document config_doc(config_path,rapidcsv::LabelParams(0,0));
-
   unsigned int size=config_doc.GetCell<unsigned int>("Daten","Größe Sample");
   double toleranz=config_doc.GetCell<double>("Daten","Toleranz in mm");
   unsigned int anzahl_punkte=config_doc.GetCell<unsigned int >("Daten","Anzahl der Messpunkte");
-
   std::string testip=config_doc.GetCell<std::string>("Daten","IP-Adresse");
-
   const char *ip=testip.c_str();
-  /**
-
-  int size=150;
-  double toleranz=2;
-  unsigned int anzahl_punkte=6;
-  char ip[]="192.168.0.138";
-
-*/
 
   //Signal Slot Connection aufbauen
   QObject::connect(&w, &MainWindow::trafom_einlesen_sig,&c, &calculation::trafom_einlesen);
@@ -259,7 +236,7 @@ int main(int argc, char *argv[])
   std::setlocale(LC_ALL,"en_US.UTF-8");
   w.show();
 
-  //Threads starten mit writefunction und readfunction
+  //Threads starten csonsumer und producer Funktion (std::ref, übergibt Werte mit call by reference)
   std::thread t1(producer, std::ref(vec),size,std::ref(c),toleranz,ip);
   std::thread t2(consumer, std::ref(vec),std::ref(vecmittel),toleranz, anzahl_punkte,std::ref(c));
 
@@ -267,7 +244,7 @@ int main(int argc, char *argv[])
   if (sem_init(&mutex, 0, 1) == -1)
     std::cerr << "Error: semaphore" << std::endl;
 
-  if (sem_init(&empty, 0, 1) == -1)
+  if (sem_init(&empty, 0, 1) == -1)//Warteschlange hat 1 Platz
     std::cerr << "Error: semaphore" << std::endl;
 
   if (sem_init(&full, 0, 0) == -1)
@@ -278,12 +255,12 @@ int main(int argc, char *argv[])
       a.processEvents();
       usleep(15000);
       if(w.exit==true){
-          return 0;
+          break;
         }
     }
 
-
   t1.join();
   t2.join();
+  return 0;
   // return a.exec();
 }

@@ -3,6 +3,7 @@
 
 sample::sample(std::vector<messpunkt> daten)
   : daten(daten){
+  //Initiale Wertzuweisung
   xmax=daten[0].sx;
   xmin=daten[0].sx;
   ymax=daten[0].sy;
@@ -12,6 +13,8 @@ sample::sample(std::vector<messpunkt> daten)
   double xmean=0;
   double ymean=0;
   double zmean=0;
+
+  //Analyse der minimalen und maximalen Werte
   for (unsigned int i=1; daten.size()>i;i++){
       if(xmax<daten[i].sx){
           xmax=daten[i].sx;
@@ -36,7 +39,7 @@ sample::sample(std::vector<messpunkt> daten)
         }
     }
 
-
+  //Berechnung des Mittelwerts
   for (unsigned int k=0; daten.size()>k;k++){
       xmean+=daten[k].sx;
       ymean+=daten[k].sy;
@@ -46,19 +49,16 @@ sample::sample(std::vector<messpunkt> daten)
   ymean= ymean/daten.size();
   zmean= zmean/daten.size();
 
+//Berechnung der Varianz
   double xsum=0;
   double ysum=0;
   double zsum=0;
-
   for(unsigned int j=0; j<daten.size();j++){
       xsum=xsum+pow((daten[j].sx-xmean),2);
       ysum=ysum+pow((daten[j].sy-ymean),2);
       zsum=zsum+pow((daten[j].sz-zmean),2);
     }
   anzahl_mp=daten.size();
-  std::cout << "Anzahl Messpunkte: "<< anzahl_mp<< std::endl;
-  std::cout << "Xmax: "<< xmax<< " Xmin: "<< xmin<<" Ymax: "<< ymax<< " Ymin: "<< ymin<< " Zmax: "<< zmax<< " Zmin: "<< zmin<< std::endl;
-  std::cout << "Xmean: "<< xmean<< " Ymean: "<< ymean<< " Zmean: "<< zmean<< std::endl;
   xmittel=xmean;
   ymittel=ymean;
   zmittel=zmean;
@@ -66,8 +66,6 @@ sample::sample(std::vector<messpunkt> daten)
   yvar=sqrt(ysum/daten.size());
   zvar=sqrt(zsum/daten.size());
 }
-
-
 
 
 sample::~sample(){}

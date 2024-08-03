@@ -27,6 +27,10 @@ public:
    * @param stream   extrahiert die x-, y- und z-Koordinate aus dem über UDP übermittelten char-Array des ART-Trackingsystems
    */
   messpunkt(char *stream);
+  /**
+   * @brief Construct a new messpunkt object
+   * 
+   */
   messpunkt();
   /**
    * @brief Destroy the messpunkt object

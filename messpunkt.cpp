@@ -7,19 +7,19 @@ messpunkt::messpunkt(double tx, double ty, double tz) : sx(tx), sy(ty), sz(tz) {
 messpunkt::messpunkt(char *stream)
 {
 
-  char extract_stream[250];
-  char start[] = "6dmt2";
-  char end[] = "6dmtr";
+  char extract_stream[500];
+  char start[] = "6dmt2";//entspricht Identifier vom Measurement Tool
+  char end[] = "6dmtr";//entspricht Identifier vom Measurement Tool reference
 
+//Aufteilen des string und extrahieren der relevanten Values 
   char *ptrStart = strstr(stream, start);
   char *ptrEnd = strstr(stream, end);
   *ptrEnd = '\0';
   strcpy(extract_stream, ptrStart);
-  // printf("%s",extract_stream);
   char *pch;
   pch = strtok(extract_stream, " []");
   int num = 0;
-  int printon = 0;
+  int printon = 0; //kann auf 1 gesetzt weren für Debug Hilfe 
   double buf = 0;
   while (pch != NULL)
   {
@@ -47,7 +47,6 @@ messpunkt::messpunkt(char *stream)
     default:
       break;
     }
-    // printf("%s in Aufruf %d\n",pch,num);
     pch = strtok(NULL, " []");
     num++;
   }
